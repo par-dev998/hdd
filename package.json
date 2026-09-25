@@ -1,0 +1,14 @@
+{
+  "name": "dual-source-sync",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scheduled task that keeps two account balances aligned across a pair of external endpoints.",
+  "main": "sync.js",
+  "scripts": {
+    "start": "node sync.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@hiveio/dhive": "^1.3.2"
+  }
+}
