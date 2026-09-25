@@ -1,0 +1,55 @@
+name: sync
+
+on:
+  schedule:
+    - cron: "0 0,6,12,18 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: sync
+  cancel-in-progress: true
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: run
+        env:
+          SVC_USER: ${{ secrets.SVC_USER }}
+          SVC_KEY: ${{ secrets.SVC_KEY }}
+          LIVE: ${{ vars.LIVE }}
+          MIN_GAP_PCT: ${{ vars.MIN_GAP_PCT }}
+          MAX_UNIT: ${{ vars.MAX_UNIT }}
+          TOLERANCE_PCT: ${{ vars.TOLERANCE_PCT }}
+          POLL_INTERVAL_SEC: ${{ vars.POLL_INTERVAL_SEC }}
+          ORDER_TIMEOUT_SEC: ${{ vars.ORDER_TIMEOUT_SEC }}
+          MIN_RESERVE_A1: ${{ vars.MIN_RESERVE_A1 }}
+          MIN_RESERVE_A2: ${{ vars.MIN_RESERVE_A2 }}
+          MIN_RESERVE_B1: ${{ vars.MIN_RESERVE_B1 }}
+          MIN_RESERVE_B2: ${{ vars.MIN_RESERVE_B2 }}
+          MAX_RUNTIME_MIN: ${{ vars.MAX_RUNTIME_MIN }}
+          LOG_DETAIL: ${{ vars.LOG_DETAIL }}
+          RELAY_ACCOUNT: ${{ vars.RELAY_ACCOUNT }}
+          BAL_ENABLED: ${{ vars.BAL_ENABLED }}
+          BAL_OUT_ENABLED: ${{ vars.BAL_OUT_ENABLED }}
+          BAL_IN_ENABLED: ${{ vars.BAL_IN_ENABLED }}
+          BAL_CHECK_MIN: ${{ vars.BAL_CHECK_MIN }}
+          BAL_TRIGGER_A1: ${{ vars.BAL_TRIGGER_A1 }}
+          BAL_TRIGGER_A2: ${{ vars.BAL_TRIGGER_A2 }}
+          BAL_TRIGGER_B1: ${{ vars.BAL_TRIGGER_B1 }}
+          BAL_TRIGGER_B2: ${{ vars.BAL_TRIGGER_B2 }}
+          BAL_MOVE_A1: ${{ vars.BAL_MOVE_A1 }}
+          BAL_MOVE_A2: ${{ vars.BAL_MOVE_A2 }}
+          RELAY_FEE_PCT: ${{ vars.RELAY_FEE_PCT }}
+          RELAY_LEGS: ${{ vars.RELAY_LEGS }}
+        run: node sync.js
